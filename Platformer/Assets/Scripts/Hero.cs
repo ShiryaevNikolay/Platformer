@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Hero : MonoBehaviour
+public class Hero : Entity
 {
     [SerializeField] private float speed = 3f;  // Скорость движения
     [SerializeField] private int lives = 5;  // Количество жизней
@@ -13,6 +11,8 @@ public class Hero : MonoBehaviour
     private Animator anim;
     private SpriteRenderer sprite;
 
+    public static Hero Instance { get; set; }
+
     private States State
     {
         get { return (States)anim.GetInteger("state"); }
@@ -21,6 +21,7 @@ public class Hero : MonoBehaviour
 
     private void Awake()
     {
+        Instance = this;
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         sprite = GetComponentInChildren<SpriteRenderer>();
@@ -61,6 +62,12 @@ public class Hero : MonoBehaviour
         isGrounded = collider.Length > 1;
 
         if (!isGrounded) State = States.jump;
+    }
+
+    public override void GetDamage()
+    {
+        lives -= 1;
+        Debug.Log(lives);
     }
 }
 
